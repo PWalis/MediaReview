@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function Home() {
-    return (
-        <div>
-            <h1>Home</h1>
-        </div>
-    )
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    fetch("/reviews")
+      .then((res) => res.json())
+      .then((reviews) => setReviews(reviews));
+  }, []);
+
+  return (
+    <div>
+      {reviews.map((review) => (
+        <>
+          <p>{review.name}</p>
+          <p>{review.rating}</p>
+          <p>{review.comment}</p>
+        </>
+      ))}
+    </div>
+  );
 }
 
-export default Home
+export default Home;
