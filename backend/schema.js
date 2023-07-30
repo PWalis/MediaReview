@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     hash: String,
     email: String,
+    ref: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}]
 });
 
 module.exports = {ReviewSchema, UserSchema};

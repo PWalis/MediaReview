@@ -1,8 +1,12 @@
 import "./App.css";
 import Header from "./components/UI/Header";
 import Home from "./components/Pages/Home";
+import Login from "./components/Pages/Login";
 import CreatePost from "./components/Pages/CreatePost";
-import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useState } from "react";
+import Context from "./components/Context/Context";
+import Register from "./components/Pages/Register";
 
 const router = createBrowserRouter([
   {
@@ -26,12 +30,66 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    name: "login",
+    path: "/login",
+    exact: true,
+    element: <Header />,
+    children: [
+      {
+        name: "login",
+        path: "/login",
+        exact: true,
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    name: "Register",
+    path: "/register",
+    exact: true,
+    element: <Header />,
+    children: [
+      {
+        name: "Register",
+        path: "/register",
+        exact: true,
+        element: <Register />,
+      },
+    ],
+  },
 ]);
 
 function App() {
+  const [contextState, setContextState] = useState({
+    isAuthenticated: false,
+    userId: null,
+  });
+
+  const updateAuth = (value) => {
+    setContextState((prevState) => {
+      return { ...prevState, isAuthenticated: value };
+    });
+  };
+
+  const updateUserId = (value) => {
+    setContextState((prevState) => {
+      return { ...prevState, userId: value };
+    });
+  };
+
   return (
     <>
-      <RouterProvider router={router}></RouterProvider>
+      <Context.Provider
+        value={{
+          isAuthenticated: contextState.isAuthenticated,
+          userId: contextState.userId,
+          updateAuth: updateAuth,
+          updateUserId: updateUserId,
+        }}
+      >
+        <RouterProvider router={router}></RouterProvider>
+      </Context.Provider>
     </>
   );
 }
