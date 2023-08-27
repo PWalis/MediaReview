@@ -15,7 +15,22 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     hash: String,
     email: String,
-    ref: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}]
+    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}]
 });
 
-module.exports = {ReviewSchema, UserSchema};
+const TokenSchema = new mongoose.Schema({
+    token: String,
+    userId: String,
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 432000
+    }
+});
+
+const ProfileImgSchema = new mongoose.Schema({
+    fileName: String,
+    userID: String
+});
+
+module.exports = {ReviewSchema, UserSchema, TokenSchema, ProfileImgSchema};

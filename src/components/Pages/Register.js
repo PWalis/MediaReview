@@ -1,4 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Context from "../Context/Context";
 
 //password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character
 const passwordValidReducer = (state, action) => {
@@ -36,6 +38,7 @@ const passwordValidReducer = (state, action) => {
 };
 
 const Register = () => {
+  const context = useContext(Context);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -65,6 +68,8 @@ const Register = () => {
     dispatchPasswordValid({ type: "IS_VALID" });
   };
 
+  const navigate = useNavigate();
+
   const submitHandler = async (event) => {
     event.preventDefault();
     await fetch("/createUser", {
@@ -80,6 +85,30 @@ const Register = () => {
     })
       .then((res) => res.json())
       .then((data) => console.log(data.message));
+    await fetch("/authenticate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message === "User not found") {
+          alert("User not found");
+        } else if (data.message === "User not authenticated") {
+          alert("User not authenticated");
+        } else {
+          context.updateAuth(true);
+          context.updateUserId(data.id);
+          document.cookie = "loginToken=" + data.token + "; max-age=" + data.expires;
+          document.cookie = "userID=" + data.id + "; max-age=" + data.expires;
+          navigate("/");
+        }
+      });
   };
 
   const eyeOnClickHandler = (event) => {

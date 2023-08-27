@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import Context from "../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -14,6 +15,8 @@ const Login = () => {
   const updatePasswordHandler = (event) => {
     setPassword(event.target.value);
   };
+
+  const navigate = useNavigate();
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -34,6 +37,9 @@ const Login = () => {
           // alert("User authenticated");
           context.updateAuth(true);
           context.updateUserId(data.id);
+          document.cookie = "loginToken=" + data.token + "; max-age=" + data.expires;
+          document.cookie = "userID=" + data.id + "; max-age=" + data.expires;
+          navigate("/")
         }
       });
   };

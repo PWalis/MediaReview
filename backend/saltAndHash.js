@@ -16,4 +16,10 @@ const hashSaltedPassword = (password, salt) => {
     return hash.toString();
 }
 
-module.exports = {saltAndHashPassword, hashSaltedPassword};
+const hashFilename = (filename, username) => {
+    const saltedFilename = filename + username;
+    const hash = crypto.SHA1(saltedFilename);
+    return hash.toString();
+};
+
+module.exports = {saltAndHashPassword, hashSaltedPassword, hashFilename};

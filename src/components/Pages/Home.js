@@ -3,6 +3,7 @@ import Review from "../Review/Review";
 import Context from "../Context/Context";
 import Login from "./Login";
 import {Link} from "react-router-dom";
+import ProfilePage from "./ProfilePage";
 
 function Home() {
   const [reviews, setReviews] = useState([]);
@@ -10,9 +11,19 @@ function Home() {
   const context = React.useContext(Context);
 
   useEffect(() => {
-    fetch("/reviews")
-      .then((res) => res.json())
-      .then((reviews) => setReviews(reviews));
+    const cookieValues = document.cookie.split("; ");
+    console.log(document.cookie);
+    if (!cookieValues.find((item) => item.startsWith("loginToken"))) {
+      context.updateAuth(false);
+    } else {
+      context.updateAuth(true);
+      context.updateUserId(cookieValues.reduce((acc, item) => {
+        if (item.startsWith("userID")) {
+          return item.split("=")[1];
+        } else {
+          return acc;
+        }}), null);
+    }
   }, []);
 
   useEffect(() => {
@@ -22,10 +33,12 @@ function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: context.userId }),
+        body: JSON.stringify({ userID: context.userId }),
       })
         .then((res) => res.json())
-        .then((reviews) => setReviews(reviews));
+        .then((reviews) => setReviews(reviews))
+        .catch((err) => console.log(err));
+
     }
   }, [context.isAuthenticated]);
 

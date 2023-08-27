@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useState } from "react";
 import Context from "./components/Context/Context";
 import Register from "./components/Pages/Register";
+import ProfilePage from "./components/Pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,20 @@ const router = createBrowserRouter([
         path: "/register",
         exact: true,
         element: <Register />,
+      },
+    ],
+  },
+  {
+    name: "ProfilePage",
+    path: "/ProfilePage",
+    exact: true,
+    element: <Header />,
+    children: [
+      {
+        name: "ProfilePage",
+        path: "/ProfilePage",
+        exact: true,
+        element: <ProfilePage />,
       },
     ],
   },
