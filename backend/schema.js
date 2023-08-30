@@ -30,7 +30,9 @@ const TokenSchema = new mongoose.Schema({
 
 const ProfileImgSchema = new mongoose.Schema({
     fileName: String,
-    userID: String
+    userID: String,
+    signedUrl: String,
+    createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = {ReviewSchema, UserSchema, TokenSchema, ProfileImgSchema};

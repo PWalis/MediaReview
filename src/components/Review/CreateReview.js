@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import Context from "../Context/Context";
 
 function CreateReview() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [rating, setRating] = useState("");
+  const context = useContext(Context);
 
   const updateTitleHandler = (event) => {
     setTitle(event.target.value);
@@ -17,18 +19,29 @@ function CreateReview() {
     setRating(event.target.value);
   };
 
-    const submitHandler = async (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-    await fetch("/review", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ title: title, body: body, rating: rating }),
+    if (title === "" || body === "" || rating === "") {
+      return;
+    }
+    await fetch("/createReview", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: title,
+        comment: body,
+        rating: rating,
+        userID: context.userId,
+      }),
     })
-        .then((res) => res.json())
-        .then((data) => console.log(data.message));
-    };
+      .then((res) => res.json())
+      .then((data) => console.log(data.message));
+    setTitle("");
+    setBody("");
+    setRating("");
+  };
 
   return (
     <div>

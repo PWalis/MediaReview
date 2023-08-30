@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useContext, useState} from "react";
+import Context from "../Context/Context.js";
+import CreateReview from "../Review/CreateReview.js";
 
 function CreatePost() {
+  // const [reviews, setReviews] = useState({name: null, rating: null, comment: null}); 
+  // const context = useContext(Context);
+
+  // const 
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.target);
+  //   data.append("userID", context.userId);
+  //   await fetch("/createReview", {
+  //     method: "POST",
+  //     contentType: "application/json",
+  //     body: data,
+  //     });
+  //   };
+
   return (
     <div>
-      <form>
-        <label htmlFor="title">Title</label>
-        <input type="text" id="title" />
-        <label htmlFor="content">Content</label>
-        <textarea id="content" rows="5" />
-        <button type="submit">Add Post</button>
-      </form>
+      <CreateReview/>
     </div>
   );
 }

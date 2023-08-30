@@ -34,7 +34,13 @@ const upload = multer({ storage: storage });
 
 //creates a review and adds it to the user's ref array
 app.post("/createReview", async (req, res) => {
-  const user = await User.findOne({ username: req.body.username }); //eventually change this to _id
+  const user = await User.findOne({ _id: req.body.userID }); //find user by id
+  if (!user) {
+    res.send("No user found");
+    console.log("no user found:" + JSON.stringify(req.body));
+    return;
+  }
+
   const review = new Review({
     name: req.body.name,
     rating: req.body.rating,
@@ -193,9 +199,14 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
   await uploadFile(req.file, req.body.username);
   const filename = hashFilename(req.file.originalname, req.body.username);
+  const s3Response = await getPresignedUrl(
+    "media-review",
+    filename
+  );
   const profileImg = new ProfileImg({
     fileName: filename,
     userID: req.body.userId,
+    signedUrl: s3Response,
   });
   console.log("username: " + req.body.userId);
   await profileImg
@@ -213,11 +224,25 @@ app.post("/image", async (req, res) => {
   console.log("username: " + req.body.userId);
   await ProfileImg.findOne({ userID: req.body.userId })
     .then(async (profileImg) => {
-      const s3Response = await getPresignedUrl(
-        "media-review",
-        profileImg.fileName
-      );
-      res.send({ signedUrl: s3Response });
+      if (profileImg.createdAt < Date.now() - 604800000) {
+        console.log("date expired"); //if image is older than 7 days, delete it
+        const s3Response = await getPresignedUrl(
+          "media-review",
+          profileImg.fileName
+        )
+        .then(async (s3Response) => {
+          await ProfileImg.updateOne(
+            { userID: req.body.userId },
+            { signedUrl: s3Response },
+            { createdAt: Date.now()}
+          );
+        });
+        res.send({ signedUrl: s3Response });
+      } else {
+        console.log("date not expired")
+        res.send({ signedUrl: profileImg.signedUrl });
+      }
+      await profileImg.save();
     })
     .catch((err) => {
       res.status(400).send("unable to find image in database");

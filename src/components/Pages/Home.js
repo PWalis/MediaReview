@@ -24,9 +24,6 @@ function Home() {
           return acc;
         }}), null);
     }
-  }, []);
-
-  useEffect(() => {
     if (context.isAuthenticated) {
       fetch("/reviews", {
         method: "POST",
@@ -40,7 +37,8 @@ function Home() {
         .catch((err) => console.log(err));
 
     }
-  }, [context.isAuthenticated]);
+    console.log("useEffect home")
+  }, []);
 
   const authenticatedPage = (
     <div>

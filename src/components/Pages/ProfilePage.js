@@ -79,6 +79,7 @@ const ProfilePage = () => {
       setProfilePicture({picture: data.signedUrl});
     }
     )
+    // console.log("useEffect")
   }, []);
 
   const handleSubmit = async (e) => {
