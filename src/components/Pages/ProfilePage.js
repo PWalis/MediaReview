@@ -50,36 +50,25 @@ const ProfilePage = () => {
   const context = useContext(Context);
 
   useEffect(() => {
-    // const cookieValues = document.cookie.split("; ");
-    // console.log(document.cookie);
-    // if (!cookieValues.find((item) => item.startsWith("loginToken"))) {
-    //   context.updateAuth(false);
-    // } else {
-    //   context.updateAuth(true);
-    //   context.updateUserId(
-    //     cookieValues.reduce((acc, item) => {
-    //       if (item.startsWith("userID")) {
-    //         return item.split("=")[1];
-    //       } else {
-    //         return acc;
-    //       }
-    //     })
-    //   );
-    // };
-    fetch("/image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: context.userId }),
-    })
-    .then ((res) => res.json())
-    .then ((data) => {
-      console.log(data);
-      setProfilePicture({picture: data.signedUrl});
+    if (
+      profilePicture.picture ===
+      "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true"
+    ) {
+      fetch("/image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: context.userId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setProfilePicture({ picture: data.signedUrl });
+        });
+    } else {
+      console.log("profilePicture.picture is: " + profilePicture.picture);
     }
-    )
-    // console.log("useEffect")
   }, []);
 
   const handleSubmit = async (e) => {
