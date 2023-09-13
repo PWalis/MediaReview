@@ -7,6 +7,7 @@ const Review = (props) => {
   const [rating, setRating] = useState(props.rating);
   const [publishedBy, setPublishedBy] = useState(props.published);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [createdAt, setCreatedAt] = useState(props.createdAt);
   const [id, setId] = useState(props.id);
 
   useEffect(() => {
@@ -16,7 +17,13 @@ const Review = (props) => {
     setPublishedBy(props.published);
     setIsAuthor(props.isAuthor);
     setId(props.id);
-  }, [props.title, props.body, props.rating, props.publishedBy, props.isAuthor]);
+  }, [
+    props.title,
+    props.body,
+    props.rating,
+    props.publishedBy,
+    props.isAuthor,
+  ]);
 
   const editOnClickHandler = () => {
     setEditable(true);
@@ -52,31 +59,72 @@ const Review = (props) => {
       .then((data) => console.log(data.message));
   };
 
+
   const editButton = (
-    <button onClick={editOnClickHandler}>
-      <i class="fa fa-edit" ></i>
+    <button
+      className="absolute bottom-1 right-3 scale-125"
+      onClick={editOnClickHandler}
+    >
+      <i class="fa fa-edit"></i>
     </button>
   );
   const BasicReview = (
-    <div>
-      <h3>{title}</h3>
-      <p>{body}</p>
-      <p>{rating}</p>
-      <p>{publishedBy}</p>
+    <div className="relative border-2 border-slate-400 bg-slate-300 bg-opacity-30 shadow-md max-w-5xl w-full m-auto rounded-lg p-3">
+      <h3 className="text-3xl">{title}</h3>
+      <p className="text-lg">{body}</p>
+      <p className="">{`${rating}/10`}</p>
+      <p className="absolute top-3 right-5">
+        {new Date(createdAt).toLocaleDateString("en-us", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
+      </p>
       {isAuthor ? editButton : null}
     </div>
   );
 
   const EditableReview = (
-    <div>
+    <div className="flex flex-col relative border-2 border-slate-400 bg-slate-300 bg-opacity-30 shadow-md max-w-5xl w-full m-auto rounded-lg p-3">
       <label htmlFor="title">Title</label>
-      <input value={title} onChange={updateTitleHandler}></input>
+      <input
+        className="bg-slate-100 max-w-4xl"
+        value={title}
+        onChange={updateTitleHandler}
+      ></input>
       <label htmlFor="body">Body</label>
-      <input value={body} onChange={updateBodyHandler}></input>
+      <input
+        className="bg-slate-100 max-w-4xl"
+        value={body}
+        onChange={updateBodyHandler}
+      ></input>
       <label htmlFor="rating">Rating</label>
-      <input value={rating} onChange={updateRatingHandler}></input>
-      <button onClick={saveOnClickHandler}>
-        <i class="fa fa-save" ></i>
+      <input
+        className="bg-slate-100 max-w-4xl"
+        value={rating}
+        onChange={updateRatingHandler}
+      ></input>
+      <button
+        className="absolute bottom-1 right-3 scale-150"
+        onClick={saveOnClickHandler}
+      >
+        <i class="fa fa-save"></i>
+      </button>
+      <button onClick={() => props.deleteOnClickHandler(id)}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          className="absolute top-1 right-2 h-7 fill-red-400"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+          />
+        </svg>
       </button>
     </div>
   );

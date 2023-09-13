@@ -94,7 +94,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="bg-blue-100">
       <Context.Provider
         value={{
           isAuthenticated: contextState.isAuthenticated,
@@ -105,7 +105,7 @@ function App() {
       >
         <RouterProvider router={router}></RouterProvider>
       </Context.Provider>
-    </>
+    </div>
   );
 }
 

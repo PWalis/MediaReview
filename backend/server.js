@@ -37,7 +37,6 @@ app.post("/createReview", async (req, res) => {
   const user = await User.findOne({ _id: req.body.userID }); //find user by id
   if (!user) {
     res.send("No user found");
-    console.log("no user found:" + JSON.stringify(req.body));
     return;
   }
 
@@ -72,6 +71,7 @@ app.post("/reviews", async (req, res) => {
     return;
   }
   res.send(user.reviews);
+  await user.depopulate("reviews");
 });
 
 //update review
@@ -88,7 +88,20 @@ app.put("/update", async (req, res) => {
       res.json({ message: "Review updated successfully" });
     })
     .catch((err) => {
-      res.status(400).send({ message: "unable to update the database" });
+      res
+        .status(400)
+        .send({ message: "unable to update the database", error: err });
+    });
+});
+
+//delete review
+app.delete("/delete", async (req, res) => {
+  const review = await Review.findOneAndDelete({ _id: req.body.id })
+    .then((review) => {
+      res.json({ message: "Review deleted successfully" });
+    })
+    .catch((err) => {
+      res.status(400).send("unable to delete from database");
     });
 });
 
@@ -199,16 +212,12 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
   await uploadFile(req.file, req.body.username);
   const filename = hashFilename(req.file.originalname, req.body.username);
-  const s3Response = await getPresignedUrl(
-    "media-review",
-    filename
-  );
+  const s3Response = await getPresignedUrl("media-review", filename);
   const profileImg = new ProfileImg({
     fileName: filename,
     userID: req.body.userId,
     signedUrl: s3Response,
   });
-  console.log("username: " + req.body.userId);
   await profileImg
     .save()
     .then((profileImg) => {
@@ -221,25 +230,21 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
 //get image
 app.post("/image", async (req, res) => {
-  console.log("username: " + req.body.userId);
   await ProfileImg.findOne({ userID: req.body.userId })
     .then(async (profileImg) => {
       if (profileImg.createdAt < Date.now() - 604800000) {
-        console.log("date expired"); //if image is older than 7 days, delete it
         const s3Response = await getPresignedUrl(
           "media-review",
           profileImg.fileName
-        )
-        .then(async (s3Response) => {
+        ).then(async (s3Response) => {
           await ProfileImg.updateOne(
             { userID: req.body.userId },
             { signedUrl: s3Response },
-            { createdAt: Date.now()}
+            { createdAt: Date.now() }
           );
         });
         res.send({ signedUrl: s3Response });
       } else {
-        console.log("date not expired")
         res.send({ signedUrl: profileImg.signedUrl });
       }
       await profileImg.save();

@@ -15,7 +15,9 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     hash: String,
     email: String,
-    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}]
+    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
+    subscribers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    subscribed: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 });
 
 const TokenSchema = new mongoose.Schema({
