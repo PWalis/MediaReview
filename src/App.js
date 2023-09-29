@@ -63,15 +63,7 @@ const router = createBrowserRouter([
     name: "ProfilePage",
     path: "/ProfilePage",
     exact: true,
-    element: <Header />,
-    children: [
-      {
-        name: "ProfilePage",
-        path: "/ProfilePage",
-        exact: true,
-        element: <ProfilePage />,
-      },
-    ],
+    element: <ProfilePage />,
   },
 ]);
 

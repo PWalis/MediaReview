@@ -1,27 +1,26 @@
 import React, { useState, useContext } from "react";
 import Context from "../Context/Context";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import Prompt from "../UI/Prompt";
 
 function CreateReview() {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  const [content, setContent] = useState("");
   const [rating, setRating] = useState("");
+  const [title, setTitle] = useState("");
   const context = useContext(Context);
 
   const updateTitleHandler = (event) => {
     setTitle(event.target.value);
   };
 
-  const updateBodyHandler = (event) => {
-    setBody(event.target.value);
-  };
-
   const updateRatingHandler = (event) => {
     setRating(event.target.value);
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler = async (event, draft) => {
     event.preventDefault();
-    if (title === "" || body === "" || rating === "") {
+    if (content === "" || rating === "") {
       return;
     }
     await fetch("/createReview", {
@@ -30,29 +29,79 @@ function CreateReview() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: title,
-        comment: body,
+        title: title,
+        content: content,
         rating: rating,
+        draft: draft,
         userID: context.userId,
       }),
     })
       .then((res) => res.json())
       .then((data) => console.log(data.message));
-    setTitle("");
-    setBody("");
+    setContent("");
     setRating("");
+    setTitle("");
+  };
+
+  const publish = async (event) => {
+    if (content === "" || rating === "" || title === "") {
+      await submitHandler(event, false);
+    }
+  };
+
+  const draft = async (event) => {
+    if (content === "" && rating === "" && title === "") {
+      await submitHandler(event, true);
+    }
   };
 
   return (
-    <div>
-      <form onSubmit={submitHandler}>
-        <label htmlFor="title">Title</label>
-        <input type="text" id="title" onChange={updateTitleHandler} />
-        <label htmlFor="body">Body</label>
-        <input type="text" id="body" onChange={updateBodyHandler} />
-        <label htmlFor="rating">Rating</label>
-        <input type="text" id="rating" onChange={updateRatingHandler} />
-        <button type="submit">Create</button>
+    <div className="m-auto max-w-sm md:max-w-4xl">
+      {content!=="" ? <Prompt
+        when={true}
+        message="Are you sure you want to leave before saving?"
+      /> : null}
+      <form onSubmit={submitHandler} className="">
+        <div className="flex gap-20 justify-center align-middle mb-5">
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={updateTitleHandler}
+            className="h-10 w-1/2 p-4"
+          />
+          <input
+            type="number"
+            placeholder="Rating"
+            value={rating}
+            onChange={updateRatingHandler}
+            max="10"
+            className="h-10 w-1/2 p-4"
+          />
+        </div>
+        <ReactQuill
+          theme="snow"
+          id="body"
+          value={content}
+          onChange={setContent}
+          className="mb-5 h-4/5 w-full"
+        />
+        <div className="flex gap-20 justify-center align-middle pb-5">
+          <button
+            className="ml-5 p-1 rounded-lg border-2 border-black"
+            onClick={publish}
+            type="submit"
+          >
+            Publish
+          </button>
+          <button
+            className="ml-5 p-1 rounded-lg border-2 border-black"
+            onClick={draft}
+            type="submit"
+          >
+            Save Draft
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -71,7 +71,7 @@ const Review = (props) => {
   const BasicReview = (
     <div className="relative border-2 border-slate-400 bg-slate-300 bg-opacity-30 shadow-md max-w-5xl w-full m-auto rounded-lg p-3">
       <h3 className="text-3xl">{title}</h3>
-      <p className="text-lg">{body}</p>
+      <div className="text-lg" dangerouslySetInnerHTML={{__html: body}}></div>
       <p className="">{`${rating}/10`}</p>
       <p className="absolute top-3 right-5">
         {new Date(createdAt).toLocaleDateString("en-us", {

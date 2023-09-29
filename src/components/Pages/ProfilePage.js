@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ProfilePage.css";
+import Header from "../UI/Header";
 import Context from "../Context/Context";
 import Review from "../Review/Review";
 import Modal from "../UI/Modal";
@@ -195,12 +196,12 @@ const ProfilePage = () => {
         <div className="relative group w-52 m-auto">
           <img
             src={profilePicture.picture}
-            className="rounded-full m-auto group-hover:opacity-40 group-hover:border-2"
+            className="rounded-full m-auto group-hover:opacity-40"
           />
           <p className="scale-0 group-hover:scale-100 absolute text-align-center top-1/2 right-16 font-extrabold">
             Upload Photo
           </p>
-          <input type="file" onChange={photoUpload} className="opacity-0 absolute h-52 w-52 z-40 top-0"></input>
+          <input type="file" onChange={photoUpload} className="opacity-0 absolute h-52 w-52 z-40 top-0 cursor-pointer"></input>
         </div>
         <div className="w-full p-5">
           <label htmlFor="description"></label>
@@ -211,20 +212,22 @@ const ProfilePage = () => {
             maxLength="200"
             value={description}
             placeholder="Your Description"
+            className="p-2"
           ></input>
         </div>
       </div>
     </Modal>
   );
 
+  // List of reviews
   const ReviewsList = (
     <div id="" className="container flex flex-col space-y-10 m-auto">
       {reviews.map((review) => (
         <Review
           key={review._id}
           id={review._id}
-          title={review.name}
-          body={review.comment}
+          title={review.title}
+          body={review.content}
           rating={review.rating}
           createdAt={review.createdAt}
           isAuthor={true}
@@ -237,6 +240,7 @@ const ProfilePage = () => {
   return (
     <>
       {modalActive && EditProfile}
+      <Header />
       <section>
         <Profile src={profilePicture.picture} />
       </section>

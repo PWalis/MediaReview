@@ -41,9 +41,10 @@ app.post("/createReview", async (req, res) => {
   }
 
   const review = new Review({
-    name: req.body.name,
+    title: req.body.name,
     rating: req.body.rating,
-    comment: req.body.comment,
+    content: req.body.content,
+    draft: req.body.draft,
   });
 
   review
@@ -54,7 +55,11 @@ app.post("/createReview", async (req, res) => {
     .catch((err) => {
       res.status(400).send("unable to save to database");
     });
-  user.reviews.push(review);
+  if (req.body.draft) {
+    user.drafts.push(review);
+  } else {
+    user.reviews.push(review);
+  }
   await user.save();
 });
 
@@ -79,9 +84,10 @@ app.put("/update", async (req, res) => {
   const review = await Review.findOneAndUpdate(
     { _id: req.body.id },
     {
-      name: req.body.title,
+      title: req.body.title,
       rating: req.body.rating,
-      comment: req.body.comment,
+      content: req.body.comment,
+      draft: req.body.draft,
     }
   )
     .then((review) => {
@@ -92,6 +98,30 @@ app.put("/update", async (req, res) => {
         .status(400)
         .send({ message: "unable to update the database", error: err });
     });
+});
+
+//Move review from drafts to reviews
+app.put("/publish", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send("No user found");
+    return;
+  } else if (user.drafts.length === 0) {
+    res.send("No drafts found");
+    return;
+  } else {
+    const review = await Review.findOneAndUpdate(
+      { _id: req.body.id },
+      { content: req.body.content},
+      { title: req.body.title},
+      { rating: req.body.rating},
+      { draft: false }
+    );
+    user.drafts.splice(user.drafts.indexOf(review), 1);
+    user.reviews.push(review);
+    await user.save();
+    res.send("Review published");
+  }
 });
 
 //delete review

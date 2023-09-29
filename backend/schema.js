@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const ReviewSchema = new mongoose.Schema({
-    name: String,
+    title: String,
     rating: Number,
-    comment: String,
+    content: String,
+    draft: Boolean,
     createdAt: {
         type: Date,
         default: Date.now
@@ -16,6 +17,7 @@ const UserSchema = new mongoose.Schema({
     hash: String,
     email: String,
     reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
+    drafts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
     subscribers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     subscribed: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 });
