@@ -41,7 +41,7 @@ app.post("/createReview", async (req, res) => {
   }
 
   const review = new Review({
-    title: req.body.name,
+    title: req.body.title,
     rating: req.body.rating,
     content: req.body.content,
     draft: req.body.draft,
@@ -61,6 +61,22 @@ app.post("/createReview", async (req, res) => {
     user.reviews.push(review);
   }
   await user.save();
+});
+
+//list Drafts
+app.post("/drafts", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID })
+    .populate("drafts")
+    .exec();
+  if (!user) {
+    res.send("No user found");
+    return;
+  } else if (user.drafts.length === 0) {
+    res.send("No drafts found");
+    return;
+  }
+  res.send(user.drafts);
+  await user.depopulate("drafts");
 });
 
 //list reviews
@@ -86,7 +102,7 @@ app.put("/update", async (req, res) => {
     {
       title: req.body.title,
       rating: req.body.rating,
-      content: req.body.comment,
+      content: req.body.content,
       draft: req.body.draft,
     }
   )
@@ -112,13 +128,16 @@ app.put("/publish", async (req, res) => {
   } else {
     const review = await Review.findOneAndUpdate(
       { _id: req.body.id },
-      { content: req.body.content},
-      { title: req.body.title},
-      { rating: req.body.rating},
-      { draft: false }
+      {
+        content: req.body.content,
+        title: req.body.title,
+        rating: req.body.rating,
+        draft: false,
+      }
     );
-    user.drafts.splice(user.drafts.indexOf(review), 1);
     user.reviews.push(review);
+    user.drafts.splice(user.drafts.indexOf(review), 1);
+    console.log(review._id);
     await user.save();
     res.send("Review published");
   }
@@ -133,6 +152,31 @@ app.delete("/delete", async (req, res) => {
     .catch((err) => {
       res.status(400).send("unable to delete from database");
     });
+});
+
+//delete all reviews and drafts from user
+app.delete("/deleteAll", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send("No user found");
+    return;
+  } else if (user.reviews.length === 0) {
+    res.send("No reviews found");
+    return;
+  } else {
+    user.reviews.forEach(async (review) => {
+      await Review.deleteOne({ _id: review._id });
+    });
+    if (user.drafts.length !== 0) {
+      user.drafts.forEach(async (draft) => {
+        await Review.deleteOne({ _id: draft._id });
+      });
+    }
+    user.drafts = [];
+    user.reviews = [];
+    await user.save();
+    res.send({ message: "Reviews and Drafts deleted" });
+  }
 });
 
 //delete all reviews
@@ -260,7 +304,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
 //get image
 app.post("/image", async (req, res) => {
-  await ProfileImg.findOne({ userID: req.body.userId })
+  await ProfileImg.findOne({ userID: req.body.userID })
     .then(async (profileImg) => {
       if (profileImg.createdAt < Date.now() - 604800000) {
         const s3Response = await getPresignedUrl(
@@ -282,6 +326,28 @@ app.post("/image", async (req, res) => {
     .catch((err) => {
       res.status(400).send("unable to find image in database");
     });
+});
+
+//upload description
+app.put("/updateDescription", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    user.description = req.body.description;
+    res.send({ message: "description updated" });
+    await user.save();
+  }
+});
+
+//get description
+app.post("/description", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID});
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    res.send({ description: user.description });
+  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

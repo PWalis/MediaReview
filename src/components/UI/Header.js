@@ -7,7 +7,7 @@ function Header() {
   const context = React.useContext(Context);
 
   const isAuthenticatedHeader = (
-    <div className="py-5 w-full flex m-auto justify-center space-x-4 bg-blue-100 border-collapse">
+    <div className="py-5 w-full flex m-auto justify-center space-x-4 bg-blue-100 border-collapse gap-14">
       <button>
         <Link to="/" className="sm:px-10 px-5 py-3 bg-gradient-to-r from-blue-200 to-blue-500 rounded-lg">Feed</Link>
       </button>

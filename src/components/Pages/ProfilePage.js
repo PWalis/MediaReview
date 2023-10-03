@@ -28,7 +28,7 @@ const ProfilePage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: context.userId }),
+        body: JSON.stringify({ userID: context.userId }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -51,11 +51,29 @@ const ProfilePage = () => {
         .catch((err) => console.log(err));
     }
     document.addEventListener("mousedown", (event) => {
-      if (event.target.id === "More Button" || event.target.id === "More menu" || event.target.id === "exit modal" || event.target.id === "Edit Button" || event.target.id === "Delete Button" || event.target.id === "Subscriptions Button") {
+      if (
+        event.target.id === "More Button" ||
+        event.target.id === "More menu" ||
+        event.target.id === "exit modal" ||
+        event.target.id === "Edit Button" ||
+        event.target.id === "Delete Button" ||
+        event.target.id === "Subscriptions Button"
+      ) {
         return;
       }
       setMenuActive(false);
     });
+    fetch("/description", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userID: context.userId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setDescription(data.description);
+      });
   }, []);
 
   const handleClick = () => {
@@ -115,8 +133,25 @@ const ProfilePage = () => {
     setDescription(event.target.value);
   };
 
+  const descriptionSubmitHandler = async (event) => {
+    event.preventDefault();
+    await fetch("/updateDescription", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        description: description,
+        userID: context.userId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data.message));
+    setDescription(description);
+  };
+
   const Profile = ({ src }) => (
-    <div className="container m-auto pt-4 max-w-6xl">
+    <div className="container m-auto pt-4 max-w-6xl ">
       <div
         id="profile picture"
         className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative"
@@ -170,14 +205,7 @@ const ProfilePage = () => {
           className="grid grid-rows-4 md:col-start-2 md:col-span-3 col-start-1 col-span-2 p-5"
         >
           <p className="row-span-1">Subscribers 100</p>
-          <p className="row-start-2 row-span-3">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi
-            assumenda eveniet nisi inventore odio veritatis nostrum provident
-            ipsum cupiditate perspiciatis. Ducimus sit itaque necessitatibus
-            libero error quasi atque id quod distinctio ipsam perferendis illo
-            iusto odio, adipisci nobis quisquam repellat reprehenderit! Quidem
-            incidunt tempora odio culpa veniam nisi repellat totam?
-          </p>
+          <p className="row-start-2 row-span-3">{description}</p>
         </div>
       </div>
     </div>
@@ -191,7 +219,11 @@ const ProfilePage = () => {
           className="absolute -top-6 -right-6 z-30"
           onClick={editOnClickHandler}
         >
-          <img onCLick={editOnClickHandler} src={require("../../assets/exit.png")} className="w-10"></img>
+          <img
+            onCLick={editOnClickHandler}
+            src={require("../../assets/exit.png")}
+            className="w-10"
+          ></img>
         </button>
         <div className="relative group w-52 m-auto">
           <img
@@ -201,19 +233,28 @@ const ProfilePage = () => {
           <p className="scale-0 group-hover:scale-100 absolute text-align-center top-1/2 right-16 font-extrabold">
             Upload Photo
           </p>
-          <input type="file" onChange={photoUpload} className="opacity-0 absolute h-52 w-52 z-40 top-0 cursor-pointer"></input>
+          <input
+            type="file"
+            onChange={photoUpload}
+            className="opacity-0 absolute h-52 w-52 z-40 top-0 cursor-pointer"
+          ></input>
         </div>
         <div className="w-full p-5">
-          <label htmlFor="description"></label>
-          <input
-            id="description"
-            type="text"
-            onChange={descriptionChangeHandler}
-            maxLength="200"
-            value={description}
-            placeholder="Your Description"
-            className="p-2"
-          ></input>
+          <form onSubmit={descriptionSubmitHandler}>
+            <label htmlFor="description"></label>
+            <input
+              id="description"
+              type="text"
+              onChange={descriptionChangeHandler}
+              maxLength="200"
+              value={description}
+              placeholder="Your Description"
+              className="p-2"
+            ></input>
+            <button type="submit" className="bg-blue-500 rounded-lg p-1">
+              Save
+            </button>
+          </form>
         </div>
       </div>
     </Modal>
@@ -241,14 +282,16 @@ const ProfilePage = () => {
     <>
       {modalActive && EditProfile}
       <Header />
-      <section>
-        <Profile src={profilePicture.picture} />
-      </section>
-      <section>
-        <div className="relative overflow-auto max-h-160 max-w-6xl m-auto">
-          {ReviewsList}
-        </div>
-      </section>
+      <div className="shadow-slate-400 shadow-md max-w-6xl m-auto rounded-2xl">
+        <section>
+          <Profile src={profilePicture.picture} />
+        </section>
+        <section>
+          <div className="relative overflow-auto max-h-144 max-w-6xl m-auto">
+            {ReviewsList}
+          </div>
+        </section>
+      </div>
     </>
   );
 };

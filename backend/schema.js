@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     hash: String,
     email: String,
+    description: String,
     reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
     drafts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
     subscribers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
