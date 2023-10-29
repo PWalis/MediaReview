@@ -4,6 +4,7 @@ import Header from "../UI/Header";
 import Context from "../Context/Context";
 import Review from "../Review/Review";
 import Modal from "../UI/Modal";
+// import { resizeImage } from "../util/resizeImage";
 
 const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState({
@@ -115,13 +116,14 @@ const ProfilePage = () => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
-    reader.onloadend = () => {
+    // const resizedImage = resizeImage(file)
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
       setProfilePicture({
         file: file,
         picture: reader.result,
       });
     };
-    reader.readAsDataURL(file);
     await postImage(file, context.userId);
   };
 
@@ -220,7 +222,7 @@ const ProfilePage = () => {
           onClick={editOnClickHandler}
         >
           <img
-            onCLick={editOnClickHandler}
+            onClick={editOnClickHandler}
             src={require("../../assets/exit.png")}
             className="w-10"
           ></img>
@@ -239,19 +241,22 @@ const ProfilePage = () => {
             className="opacity-0 absolute h-52 w-52 z-40 top-0 cursor-pointer"
           ></input>
         </div>
-        <div className="w-full p-5">
-          <form onSubmit={descriptionSubmitHandler}>
+        <div className=" w-96 p-5 relative">
+          <form className="w-1/4" onSubmit={descriptionSubmitHandler}>
             <label htmlFor="description"></label>
-            <input
+            <textarea
               id="description"
               type="text"
               onChange={descriptionChangeHandler}
               maxLength="200"
               value={description}
               placeholder="Your Description"
-              className="p-2"
-            ></input>
-            <button type="submit" className="bg-blue-500 rounded-lg p-1">
+              className="p-2 w-80"
+            ></textarea>
+            <button
+              type="submit"
+              className="bg-blue-500 rounded-lg p-1"
+            >
               Save
             </button>
           </form>

@@ -18,6 +18,8 @@ function CreateReview({
 }) {
   const context = useContext(Context);
 
+  const quillRef = React.useRef(null);
+
   const submitHandler = async (event, draft, update, publish) => {
     event.preventDefault();
     if (content === "" || rating === "") {
@@ -114,14 +116,11 @@ function CreateReview({
     }
   };
 
+ console.log(quillRef.current)
+
   return (
     <div className=" h-full m-auto max-w-sm md:max-w-4xl pt-5">
-      {content !== "" ? (
-        <Prompt
-          when={true}
-          message="Are you sure you want to leave before saving?"
-        />
-      ) : null}
+      {/* {quillRef.getText !== "" && <Prompt when={quillRef.getText !== ""} message="Do you want to save as Draft before you leave?" />} */}
       <form
         onSubmit={submitHandler}
         className="shadow-md shadow-slate-400 p-5 rounded-lg"
@@ -149,6 +148,7 @@ function CreateReview({
           value={content}
           onChange={setContent}
           className="mb-10 h-112 w-full"
+          ref={quillRef}
         />
         <div className="flex gap-20 justify-center align-middle p-10">
           {editing ? (

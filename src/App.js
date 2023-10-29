@@ -8,6 +8,7 @@ import { useState } from "react";
 import Context from "./components/Context/Context";
 import Register from "./components/Pages/Register";
 import ProfilePage from "./components/Pages/ProfilePage";
+import OtherUserProfilePage from "./components/Pages/OtherUserProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,12 @@ const router = createBrowserRouter([
     path: "/ProfilePage",
     exact: true,
     element: <ProfilePage />,
+  },
+  {
+    name: "User",
+    path: "/User/:userID",
+    exact: true,
+    element: <OtherUserProfilePage />,
   },
 ]);
 

@@ -209,6 +209,25 @@ app.post("/createUser", async (req, res) => {
     });
 });
 
+//Search user
+app.post("/SearchUser", async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
+  if (!user) {
+    res.send({ message: "No users found with that username" });
+    return;
+  }
+  const profileImage = await ProfileImg.findOne({ userID: user._id });
+  if (!profileImage) {
+    res.send({ username: user.username, profilePic: null });
+    return;
+  }
+  res.send({
+    username: user.username,
+    profilePic: profileImage.signedUrl,
+    userID: user._id,
+  });
+});
+
 //list users
 app.get("/listUsers", async (req, res) => {
   const users = await User.find({});
@@ -342,11 +361,49 @@ app.put("/updateDescription", async (req, res) => {
 
 //get description
 app.post("/description", async (req, res) => {
-  const user = await User.findOne({ _id: req.body.userID});
+  const user = await User.findOne({ _id: req.body.userID });
   if (!user) {
     res.send({ message: "No user found" });
   } else {
     res.send({ description: user.description });
+  }
+});
+
+//subscribe to user
+app.post("/subscribe", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    user.subscribers.push(req.body.subscriberID);
+    res.send({ message: "subscribed" });
+    await user.save();
+  }
+});
+
+//unsubscribe from user
+app.post("/unsubscribe", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    user.subscribers.splice(user.subscribers.indexOf(req.body.subscriberID), 1);
+    res.send({ message: "unsubscribed" });
+    await user.save();
+  }
+});
+
+//checks if user is subscribed to another user
+app.post("/isSubscribed", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID });
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    if (user.subscribers.includes(req.body.subscriberID)) {
+      res.send({ message: "subscribed", subscribed: true });
+    } else {
+      res.send({ message: "not subscribed", subscribed: false });
+    }
   }
 });
 
