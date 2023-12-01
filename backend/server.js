@@ -15,7 +15,7 @@ const {
   hashSaltedPassword,
   hashFilename,
 } = require("./saltAndHash.js");
-const uri = process.env.URI ? process.env.URI : `mongodb+srv://pwalis:${password}@clusterwilky.k8hppvu.mongodb.net/?retryWrites=true&w=majority`;
+const uri = process.env.URI ? process.env.URI : `mongodb+srv://pwalis:Newzyzz13@clusterwilky.k8hppvu.mongodb.net/?retryWrites=true&w=majority`;
 const multer = require("multer");
 const { uploadFile, getFile, deleteFile, getPresignedUrl } = require("./S3.js");
 
