@@ -1,4 +1,4 @@
-// const password = require("./EnvVariables/MongoDBVars.js");
+const password = require("./EnvVariables/MongoDBVars.js");
 const {
   ReviewSchema,
   UserSchema,

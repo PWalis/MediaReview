@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scipts eject",
-    "install-server": "cd backend && npm install --platform=linux --arch=x64",
+    "install-server": "cd backend && npm install --platform=linux --arch=x64 sharp",
     "start-server": "cd backend && npm start",
     "install-client": "npm install",
     "start-client": "npm start"
