@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scipts eject",
-    "install-server": "cd backend && npm install --ignore-scripts=false --foreground-scripts --verbose",
+    "install-server": "cd backend && npm install --arch=arm64 --platform=linuxmusl",
     "start-server": "cd backend && npm start",
     "install-client": "npm install",
     "start-client": "npm start"
