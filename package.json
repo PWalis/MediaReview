@@ -31,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scipts eject",
-    "install-server": "cd backend && npm install --cpu=x64 --os=linux sharp",
+    "install-server": "cd backend && npm install --ignore-scripts=false --foreground-scripts --verbose",
     "start-server": "cd backend && npm start",
     "install-client": "npm install",
     "start-client": "npm start"
