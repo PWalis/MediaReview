@@ -95,6 +95,16 @@ app.post("/reviews", async (req, res) => {
   await user.depopulate("reviews");
 });
 
+//get review
+app.post("/getReview", async (req, res) => {
+  const review = await Review.findOne({ _id: req.body.id });
+  if (!review) {
+    res.send("No review found");
+    return;
+  }
+  res.send(review);
+});
+
 //update review
 app.put("/update", async (req, res) => {
   const review = await Review.findOneAndUpdate(
@@ -189,7 +199,7 @@ app.delete("/delete", async (req, res) => {
 app.post("/createUser", async (req, res) => {
   const userExists = await User.findOne({ username: req.body.username });
   if (userExists) {
-    res.send("That username is already taken");
+    res.send({ message: "That username is already taken" });
     return;
   }
   const { salt, hash } = saltAndHashPassword(req.body.password);
@@ -218,7 +228,7 @@ app.post("/SearchUser", async (req, res) => {
   }
   const profileImage = await ProfileImg.findOne({ userID: user._id });
   if (!profileImage) {
-    res.send({ username: user.username, profilePic: null });
+    res.send({ username: user.username, profilePic: null, userID: user._id });
     return;
   }
   res.send({
@@ -321,6 +331,35 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     });
 });
 
+//get profile
+app.post("/profile", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID })
+    .populate("reviews")
+    .populate("subscribers")
+    .populate("subscribed")
+    .exec();
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    res.send({
+      userID: user._id,
+      username: user.username,
+      reviews: user.reviews,
+      subscribers: user.subscribers.map((subscriber) => {
+        return { username: subscriber.username, _id: subscriber._id };
+      }),
+      subscribedTo: user.subscribed.map((subscribed) => {
+        return { username: subscribed.username, _id: subscribed._id };
+      }),
+      description: user.description,
+    });
+    await user
+      .depopulate("reviews")
+      .depopulate("subscribers")
+      .depopulate("subscribed");
+  }
+});
+
 //get image
 app.post("/image", async (req, res) => {
   await ProfileImg.findOne({ userID: req.body.userID })
@@ -329,14 +368,15 @@ app.post("/image", async (req, res) => {
         const s3Response = await getPresignedUrl(
           "media-review",
           profileImg.fileName
-        ).then(async (s3Response) => {
-          await ProfileImg.updateOne(
-            { userID: req.body.userId },
-            { signedUrl: s3Response },
-            { createdAt: Date.now() }
-          );
-        });
-        res.send({ signedUrl: s3Response });
+        );
+
+        await ProfileImg.updateOne(
+          { userID: req.body.userId },
+          { signedUrl: s3Response },
+          { createdAt: Date.now() }
+        );
+
+        res.send({ signedUrl: s3Response, message: "updated" });
       } else {
         res.send({ signedUrl: profileImg.signedUrl });
       }
@@ -372,6 +412,7 @@ app.post("/description", async (req, res) => {
 //subscribe to user
 app.post("/subscribe", async (req, res) => {
   const user = await User.findOne({ _id: req.body.userID });
+  const subscriber = await User.findOne({ _id: req.body.subscriberID });
   if (!user) {
     res.send({ message: "No user found" });
   } else {
@@ -379,17 +420,33 @@ app.post("/subscribe", async (req, res) => {
     res.send({ message: "subscribed" });
     await user.save();
   }
+  if (!subscriber) {
+    res.send({ message: "No subscriber found" });
+  } else {
+    subscriber.subscribed.push(req.body.userID);
+    await subscriber.save();
+  }
 });
 
 //unsubscribe from user
 app.post("/unsubscribe", async (req, res) => {
   const user = await User.findOne({ _id: req.body.userID });
+  const subscriber = await User.findOne({ _id: req.body.subscriberID });
   if (!user) {
     res.send({ message: "No user found" });
   } else {
     user.subscribers.splice(user.subscribers.indexOf(req.body.subscriberID), 1);
     res.send({ message: "unsubscribed" });
     await user.save();
+  }
+  if (!subscriber) {
+    res.send({ message: "No subscriber found" });
+  } else {
+    subscriber.subscribed.splice(
+      subscriber.subscribed.indexOf(req.body.userID),
+      1
+    );
+    await subscriber.save();
   }
 });
 
@@ -404,6 +461,31 @@ app.post("/isSubscribed", async (req, res) => {
     } else {
       res.send({ message: "not subscribed", subscribed: false });
     }
+  }
+});
+
+//return a chronologically orders list of reviews from users that the user is subscribed to
+app.post("/subscribedReviews", async (req, res) => {
+  const user = await User.findOne({ _id: req.body.userID })
+    .populate({
+      path: "subscribed",
+      populate: {
+        path: "reviews",
+        options: { sort: { createdAt: -1 } },
+      },
+    })
+    .exec();
+  if (!user) {
+    res.send({ message: "No user found" });
+  } else {
+    const reviews = [];
+    user.subscribed.forEach((subscribed) => {
+      subscribed.reviews.forEach((review) => {
+        reviews.push(review);
+      });
+    });
+    res.send(reviews);
+    await user.depopulate("subscribed");
   }
 });
 

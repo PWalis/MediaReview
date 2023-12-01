@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import Review from "../Review/Review";
 import Context from "../Context/Context";
 import Login from "./Login";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfilePage from "./ProfilePage";
+import Header from "../UI/Header";
 
 function Home() {
   const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
 
   const context = React.useContext(Context);
 
   useEffect(() => {
     if (context.isAuthenticated) {
-      fetch("/reviews", {
+      fetch("/subscribedReviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,6 +29,7 @@ function Home() {
       console.log(document.cookie);
       if (!cookieValues.find((item) => item.startsWith("loginToken"))) {
         context.updateAuth(false);
+        navigate("/login");
       } else {
         context.updateAuth(true);
         context.updateUserId(
@@ -44,18 +47,21 @@ function Home() {
   }, [context.isAuthenticated]);
 
   const authenticatedPage = (
-    <div>
-      {reviews.map((review) => (
-        <Review
-          key={review._id}
-          id={review._id}
-          title={review.name}
-          body={review.comment}
-          rating={review.rating}
-          isAuthor={true}
-        />
-      ))}
-    </div>
+    <section className="bg-whitesmoke h-screen">
+      <div className="grid grid-cols-5 gap-5 pt-5 bg-whitesmoke">
+        {reviews.map((review) => (
+          <Review
+            key={review._id}
+            id={review._id}
+            title={review.title}
+            body={review.content}
+            rating={review.rating}
+            createdAt={review.createdAt}
+            isAuthor={false}
+          />
+        ))}
+      </div>
+    </section>
   );
 
   const unauthenticatedPage = (
@@ -66,7 +72,7 @@ function Home() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <Header />
       {context.isAuthenticated ? authenticatedPage : unauthenticatedPage}
     </>
   );

@@ -1,18 +1,21 @@
-const sharp = require("sharp");
+import Resizer from "react-image-file-resizer";
 
 // resize buffer image
-const resizeImage = (buffer, width, height) => {
-    const resizedImage = sharp(buffer)
-        .resize(width, height)
-        .toBuffer()
-        .then((data) => {
-            console.log("Successfully resized image.");
-        return data;
-        })
-        .catch((err) => {
-        console.log("Error resizing image.", err);
-        });
-    return resizedImage;
-    };
+const resizeImage = (file, ) => {
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        console.log(uri);
+      },
+      "base64"
+    );
+  });
+};
 
-module.exports = { resizeImage };
+export default resizeImage;

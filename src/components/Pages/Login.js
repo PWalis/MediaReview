@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import Context from "../Context/Context";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Header from "../UI/Header";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -37,9 +38,10 @@ const Login = () => {
           // alert("User authenticated");
           context.updateAuth(true);
           context.updateUserId(data.id);
-          document.cookie = "loginToken=" + data.token + "; max-age=" + data.expires;
+          document.cookie =
+            "loginToken=" + data.token + "; max-age=" + data.expires;
           document.cookie = "userID=" + data.id + "; max-age=" + data.expires;
-          navigate("/")
+          navigate("/");
         }
       });
   };
@@ -58,22 +60,43 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={submitHandler}>
-        <label htmlFor="username">Username</label>
-        <input type="text" id="username" onChange={updateUsernameHandler} />
-        <label htmlFor="password">Password</label>
-        <input type="password" id="password" onChange={updatePasswordHandler} />
-        <i
-          class="far fa-eye"
-          id="togglePassword"
-          onClick={eyeOnClickHandler}
-        ></i>
-        <button type="submit">Login</button>
-      </form>
-      <p>{context.isAuthenticated ? "Authenticated" : "Not authenticated"}</p>
-      <p>{"User ID: " + context.userId}</p>
-    </div>
+    <>
+      <div className="bg-whitesmoke container max-w-md grid grid-rows-5 mt-10 m-auto max-h-176 shadow-xl pl-3 pr-3 h-176 justify-center rounded-3xl">
+        <h1 className=" text-5xl m-auto row-span-2 row-end-3">Book Review</h1>
+        <form onSubmit={submitHandler} className="flex m-auto flex-col gap-5 ">
+          {/* <label htmlFor="username">Username</label> */}
+          <input
+            type="text"
+            id="username"
+            onChange={updateUsernameHandler}
+            placeholder="Username"
+            className=" bg-transparent border-b-2 border-slate-800 focus:outline-none "
+          />
+          {/* <label htmlFor="password">Password</label> */}
+          <div className="relative">
+            <input
+              type="password"
+              id="password"
+              onChange={updatePasswordHandler}
+              placeholder="Password"
+              className=" bg-transparent border-b-2 border-slate-800 focus:outline-none"
+            />
+            <i
+              class="far fa-eye"
+              id="togglePassword"
+              onClick={eyeOnClickHandler}
+              className="far fa-eye w-6"
+            ></i>
+          </div>
+          
+            <button type="submit" className="border-2 border-slate-300">Login</button>
+            <Link to="/register" className="m-auto border-b-2 border-blue-300 hover:text-blue-400">Don't have an account?</Link>
+          
+        </form>
+        {/* <p>{context.isAuthenticated ? "Authenticated" : "Not authenticated"}</p> */}
+        {/* <p>{"User ID: " + context.userId}</p> */}
+      </div>
+    </>
   );
 };
 

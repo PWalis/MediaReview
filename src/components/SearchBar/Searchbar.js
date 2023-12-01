@@ -21,13 +21,16 @@ const SearchBar = () => {
       .then((data) => {
         console.log(data);
         if (data.message) {
-          setSearchResults(<div>{data.message}</div>);
+          setSearchResults(<div className="text-red-500 absolute top-8 right-1">{data.message}</div>);
           setTimeout(() => {
             setSearchResults(null)
           }, 2000)
           return;
         }
         setSearchResults(createList(data));
+        setTimeout(() => {
+          setSearchResults(null)
+        }, 6000)
       });
   };
 
@@ -37,7 +40,7 @@ const SearchBar = () => {
 
   const createList = (data) => {
     return (
-      <div className=" bg-red-300 w-full">
+      <div className=" bg-frenchgray w-full z-50">
         <UserAsListItem
           signedUrl={data.profilePic}
           username={data.username}
@@ -49,14 +52,15 @@ const SearchBar = () => {
 
   return (
     <>
-      <form id="searchBarForm" onSubmit={onSubmitHandler}>
+      <form id="searchBarForm" className="absolute top-0 right-1" onSubmit={onSubmitHandler}>
         <input
           id="searchBarInput"
           value={searchInput}
+          placeholder="Search user"
           onChange={onChangeHandler}
+          className="rounded-xl border-0 bg-whitesmoke h-8 focus:outline-none "
         ></input>
         <button id="searchBarSubmitButton" type="submit">
-          Search
         </button>
         {searchResults}
       </form>

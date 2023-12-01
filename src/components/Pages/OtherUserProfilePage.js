@@ -13,11 +13,10 @@ const OtherUserProfilePage = () => {
       "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
     file: "",
   });
-  const [reviews, setReviews] = useState([]);
-  const [description, setDescription] = useState("");
   const context = useContext(Context);
   const { userID } = useParams();
   const [subscribed, setSubscribed] = useState();
+  const [profile, setProfile] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +44,7 @@ const OtherUserProfilePage = () => {
       console.log("profilePicture.picture is: " + profilePicture.picture);
     }
     if (context.isAuthenticated) {
-      fetch("/reviews", {
+      fetch("/profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,34 +52,17 @@ const OtherUserProfilePage = () => {
         body: JSON.stringify({ userID: userID }),
       })
         .then((res) => res.json())
-        .then((reviews) => setReviews(reviews))
-        .catch((err) => console.log(err));
+        .then((profile) => {
+          console.log(profile);
+          setProfile({
+            username: profile.username,
+            description: profile.description,
+            subscribers: profile.subscribers,
+            subscribedTo: profile.subscribedTo,
+            reviews: profile.reviews,
+          });
+        });
     }
-
-    fetch("/description", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userID: userID }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setDescription(data.description);
-      });
-
-    fetch("/isSubscribed", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userID: userID, subscriberID: context.userId }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setSubscribed(data.subscribed);
-      });
   }, []);
 
   const subButtonOnClickHandler = () => {
@@ -88,10 +70,10 @@ const OtherUserProfilePage = () => {
   };
 
   const Profile = ({ src }) => (
-    <div className="container m-auto pt-4 max-w-6xl ">
+    <div className="container m-auto pt-4 max-w-6xl">
       <div
         id="profile picture"
-        className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative"
+        className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative "
       >
         <div className="md:col-span-1 col-span-2 m-auto">
           <img
@@ -104,38 +86,47 @@ const OtherUserProfilePage = () => {
           id="Subscribers and Description"
           className="grid grid-rows-4 md:col-start-2 md:col-span-3 col-start-1 col-span-2 p-5"
         >
-          <p className="row-span-1">Subscribers 100</p>
-          <p className="row-start-2 row-span-3">{description}</p>
+          <h1 className="row-span-1 text-2xl">{profile.username}</h1>
+          <p className="row-start-2 row-span-3">{profile.description}</p>
         </div>
         {subscribed ? (
-          <UnsubscribeButton subButton={subButtonOnClickHandler} userID={userID} subscriberID={context.userId} />
+          <UnsubscribeButton
+            subButton={subButtonOnClickHandler}
+            userID={userID}
+            subscriberID={context.userId}
+          />
         ) : (
-          <SubscribeButton subButton={subButtonOnClickHandler} userID={userID} subscriberID={context.userId} />
-        )} 
+          <SubscribeButton
+            subButton={subButtonOnClickHandler}
+            userID={userID}
+            subscriberID={context.userId}
+          />
+        )}
       </div>
     </div>
   );
 
   const ReviewsList = (
     <div id="" className="container flex flex-col space-y-10 m-auto">
-      {reviews.map((review) => (
-        <Review
-          key={review._id}
-          id={review._id}
-          title={review.title}
-          body={review.content}
-          rating={review.rating}
-          createdAt={review.createdAt}
-          isAuthor={false}
-        />
-      ))}
+      {profile.reviews &&
+        profile.reviews.map((review) => (
+          <Review
+            key={review._id}
+            id={review._id}
+            title={review.title}
+            body={review.content}
+            rating={review.rating}
+            createdAt={review.createdAt}
+            isAuthor={false}
+          />
+        ))}
     </div>
   );
 
   return (
     <>
       <Header />
-      <div className="shadow-slate-400 shadow-md max-w-6xl m-auto rounded-2xl">
+      <div className="shadow-slate-400 shadow-md max-w-6xl m-auto rounded-2xl bg-whitesmoke pb-3">
         <section>
           <Profile src={profilePicture.picture} />
         </section>

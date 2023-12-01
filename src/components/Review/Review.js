@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Review = (props) => {
   const [editable, setEditable] = useState(false);
@@ -24,10 +25,6 @@ const Review = (props) => {
     props.publishedBy,
     props.isAuthor,
   ]);
-
-  const editOnClickHandler = () => {
-    setEditable(true);
-  };
 
   const updateTitleHandler = (event) => {
     setTitle(event.target.value);
@@ -59,19 +56,18 @@ const Review = (props) => {
       .then((data) => console.log(data.message));
   };
 
-
   const editButton = (
-    <button
+    <Link
+      to={`/editPost/${id}`}
       className="absolute bottom-1 right-3 scale-125"
-      onClick={editOnClickHandler}
     >
       <i class="fa fa-edit"></i>
-    </button>
+    </Link>
   );
   const BasicReview = (
-    <div className="relative border-2 border-slate-400 bg-slate-300 bg-opacity-30 shadow-md max-w-5xl w-full m-auto rounded-lg p-3">
+    <div className="col-start-2 col-span-3 relative border-b-2 border-slate-800 bg-transparent bg-opacity-30 w-full p-3 pb-8">
       <h3 className="text-3xl">{title}</h3>
-      <div className="text-lg" dangerouslySetInnerHTML={{__html: body}}></div>
+      <div className="text-lg" dangerouslySetInnerHTML={{ __html: body }}></div>
       <p className="">{`${rating}/10`}</p>
       <p className="absolute top-3 right-5">
         {new Date(createdAt).toLocaleDateString("en-us", {
@@ -85,7 +81,7 @@ const Review = (props) => {
   );
 
   const EditableReview = (
-    <div className="flex flex-col relative border-2 border-slate-400 bg-slate-300 bg-opacity-30 shadow-md max-w-5xl w-full m-auto rounded-lg p-3">
+    <div className="col-start-2 col-span-3 relative border-b-2 border-slate-800 bg-yellow-300 bg-opacity-30 w-full p-3 pb-8">
       <label htmlFor="title">Title</label>
       <input
         className="bg-slate-100 max-w-4xl"

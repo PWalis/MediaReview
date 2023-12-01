@@ -30,6 +30,13 @@ module.exports = {
         "160": "40rem",
         "176": "44rem",
       },
+      colors: {
+        "frenchgray": "#D0CCD0",
+        "whitesmoke" : "#F5F5F5",
+        "wenge": "#605856",
+        "cerulean": "#1C6E8C",
+        "charcoal": "#274156",
+      }
     },
   },
   variants: {

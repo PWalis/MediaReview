@@ -9,56 +9,34 @@ import Context from "./components/Context/Context";
 import Register from "./components/Pages/Register";
 import ProfilePage from "./components/Pages/ProfilePage";
 import OtherUserProfilePage from "./components/Pages/OtherUserProfilePage";
+import EditPost from "./components/Pages/EditPost";
 
 const router = createBrowserRouter([
   {
     name: "Home",
     path: "/",
     exact: true,
-    element: <Header />,
-    children: [{ name: "HomePage", path: "/", exact: true, element: <Home /> }],
+    element: <Home />,
   },
   {
     name: "CreatePost",
     path: "/CreatePost",
     exact: true,
-    element: <Header />,
-    children: [
-      {
-        name: "CreatePost",
-        path: "/CreatePost",
-        exact: true,
-        element: <CreatePost />,
-      },
-    ],
+    element: <CreatePost />,
   },
   {
     name: "login",
     path: "/login",
     exact: true,
-    element: <Header />,
-    children: [
-      {
-        name: "login",
-        path: "/login",
-        exact: true,
-        element: <Login />,
-      },
-    ],
+    element: <Login />,
+
   },
   {
     name: "Register",
     path: "/register",
     exact: true,
-    element: <Header />,
-    children: [
-      {
-        name: "Register",
-        path: "/register",
-        exact: true,
-        element: <Register />,
-      },
-    ],
+    element: <Register />,
+    
   },
   {
     name: "ProfilePage",
@@ -72,6 +50,12 @@ const router = createBrowserRouter([
     exact: true,
     element: <OtherUserProfilePage />,
   },
+  {
+    name: "EditPost",
+    path: "/EditPost/:id",
+    exact: true,
+    element: <EditPost />,
+  }
 ]);
 
 function App() {
@@ -93,7 +77,7 @@ function App() {
   };
 
   return (
-    <div className="bg-blue-100">
+    <div>
       <Context.Provider
         value={{
           isAuthenticated: contextState.isAuthenticated,

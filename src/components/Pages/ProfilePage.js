@@ -4,7 +4,9 @@ import Header from "../UI/Header";
 import Context from "../Context/Context";
 import Review from "../Review/Review";
 import Modal from "../UI/Modal";
-// import { resizeImage } from "../util/resizeImage";
+import SubscribedTo from "../UI/SubscribedTo";
+import Subscribers from "../UI/Subscribers";
+// import Resizer from "react-image-file-resizer";
 
 const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState({
@@ -14,32 +16,54 @@ const ProfilePage = () => {
   });
   const [menuActive, setMenuActive] = useState(false);
   const [effect, setEffect] = useState(false);
-  const [reviews, setReviews] = useState([]);
-  const [description, setDescription] = useState("");
   const [modalActive, setModalActive] = useState(false);
+  const [subscribeModals, setSubscribeModals] = useState({
+    subscribedTo: false,
+    subscribers: false,
+  });
   const context = useContext(Context);
+  const [profile, setProfile] = useState({});
 
   useEffect(() => {
-    if (
-      profilePicture.picture ===
-      "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true"
-    ) {
-      fetch("/image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userID: context.userId }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setProfilePicture({ picture: data.signedUrl });
-        });
-    } else {
-      console.log("profilePicture.picture is: " + profilePicture.picture);
+    if (!context.isAuthenticated) {
+      const cookieValues = document.cookie.split("; ");
+      console.log(document.cookie);
+      if (!cookieValues.find((item) => item.startsWith("loginToken"))) {
+        context.updateAuth(false);
+      } else {
+        context.updateAuth(true);
+        context.updateUserId(
+          cookieValues.reduce((acc, item) => {
+            if (item.startsWith("userID")) {
+              return item.split("=")[1];
+            } else {
+              return acc;
+            }
+          }),
+          null
+        );
+      }
     }
     if (context.isAuthenticated) {
+      if (
+        profilePicture.picture ===
+        "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true"
+      ) {
+        fetch("/image", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userID: context.userId }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            setProfilePicture({ picture: data.signedUrl });
+          });
+      } else {
+        console.log("profilePicture.picture is: " + profilePicture.picture);
+      }
       fetch("/reviews", {
         method: "POST",
         headers: {
@@ -48,7 +72,6 @@ const ProfilePage = () => {
         body: JSON.stringify({ userID: context.userId }),
       })
         .then((res) => res.json())
-        .then((reviews) => setReviews(reviews))
         .catch((err) => console.log(err));
     }
     document.addEventListener("mousedown", (event) => {
@@ -57,14 +80,14 @@ const ProfilePage = () => {
         event.target.id === "More menu" ||
         event.target.id === "exit modal" ||
         event.target.id === "Edit Button" ||
-        event.target.id === "Delete Button" ||
+        event.target.id === "Subscribers Button" ||
         event.target.id === "Subscriptions Button"
       ) {
         return;
       }
       setMenuActive(false);
     });
-    fetch("/description", {
+    fetch("/profile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,10 +95,17 @@ const ProfilePage = () => {
       body: JSON.stringify({ userID: context.userId }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        setDescription(data.description);
+      .then((profile) => {
+        console.log(profile);
+        setProfile({
+          username: profile.username,
+          description: profile.description,
+          subscribers: profile.subscribers,
+          subscribedTo: profile.subscribedTo,
+          reviews: profile.reviews,
+        });
       });
-  }, []);
+  }, [context.isAuthenticated]);
 
   const handleClick = () => {
     setMenuActive(!menuActive);
@@ -94,7 +124,10 @@ const ProfilePage = () => {
     })
       .then((res) => res.json())
       .then((data) => console.log(data.message));
-    setReviews(reviews.filter((review) => review._id !== id));
+    setProfile({
+      ...profile,
+      reviews: profile.reviews.filter((review) => review._id !== id),
+    });
   };
 
   const menuToggle = menuActive ? "scale-100" : "scale-0";
@@ -112,11 +145,31 @@ const ProfilePage = () => {
     return response.json();
   }
 
+  // const resizeImage = (file, ) => {
+  //   new Promise((resolve) => {
+  //     Resizer.imageFileResizer(
+  //       file,
+  //       200,
+  //       200,
+  //       "JPEG",
+  //       100,
+  //       0,
+  //       (uri) => {
+  //         setProfilePicture({
+  //           file: file,
+  //           picture: uri,
+  //         });;
+  //       },
+  //       "base64"
+  //     );
+  //   });
+  // };
+
   const photoUpload = async (e) => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
-    // const resizedImage = resizeImage(file)
+    // await resizeImage(file);
     reader.readAsDataURL(file);
     reader.onloadend = async () => {
       setProfilePicture({
@@ -132,7 +185,7 @@ const ProfilePage = () => {
   };
 
   const descriptionChangeHandler = (event) => {
-    setDescription(event.target.value);
+    setProfile({ ...profile, description: event.target.value });
   };
 
   const descriptionSubmitHandler = async (event) => {
@@ -143,20 +196,33 @@ const ProfilePage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        description: description,
+        description: profile.description,
         userID: context.userId,
       }),
     })
       .then((res) => res.json())
       .then((data) => console.log(data.message));
-    setDescription(description);
+    setProfile({ ...profile, description: profile.description });
+  };
+
+  const subscribedToOnClickHandler = () => {
+    setSubscribeModals({
+      ...subscribeModals,
+      subscribedTo: !subscribeModals.subscribedTo,
+    });
+  };
+  const subscribersOnClickHandler = () => {
+    setSubscribeModals({
+      ...subscribeModals,
+      subscribers: !subscribeModals.subscribers,
+    });
   };
 
   const Profile = ({ src }) => (
-    <div className="container m-auto pt-4 max-w-6xl ">
+    <div className="container m-auto pt-4 max-w-6xl">
       <div
         id="profile picture"
-        className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative"
+        className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative "
       >
         <button
           onClick={handleClick}
@@ -177,12 +243,14 @@ const ProfilePage = () => {
         >
           <button
             id="Subscriptions Button"
+            onClick={subscribedToOnClickHandler}
             className="absolute top-0 right-3 bg-blue-500 border-blue-500 hover:bg-cyan-500 hover:border-cyan-500 border-2 rounded-xl text-white"
           >
             Subscriptions
           </button>
           <button
-            id="Delete Button"
+            id="Subscribers Button"
+            onClick={subscribersOnClickHandler}
             className="absolute top-8 right-3 bg-blue-500 rounded-xl border-blue-500 border-2 hover:bg-cyan-500 hover:border-cyan-500 text-white"
           >
             Subscribers
@@ -199,15 +267,15 @@ const ProfilePage = () => {
           <img
             htmlFor=""
             src={src}
-            className="shadow rounded-full max-h-48 m-auto align-content-middle border-none flex-shrink-0 object-contain mb-4"
+            className="shadow rounded-full max-h-48 m-auto align-content-middle border-none flex-shrink-0 object-cover h-52 w-52 mb-4"
           />
         </div>
         <div
           id="Subscribers and Description"
           className="grid grid-rows-4 md:col-start-2 md:col-span-3 col-start-1 col-span-2 p-5"
         >
-          <p className="row-span-1">Subscribers 100</p>
-          <p className="row-start-2 row-span-3">{description}</p>
+          <h1 className="row-span-1 text-2xl">{profile.username}</h1>
+          <p className="row-start-2 row-span-3 pt-5">{profile.description}</p>
         </div>
       </div>
     </div>
@@ -230,7 +298,7 @@ const ProfilePage = () => {
         <div className="relative group w-52 m-auto">
           <img
             src={profilePicture.picture}
-            className="rounded-full m-auto group-hover:opacity-40"
+            className="rounded-full m-auto group-hover:opacity-40 object-cover h-52 w-52"
           />
           <p className="scale-0 group-hover:scale-100 absolute text-align-center top-1/2 right-16 font-extrabold">
             Upload Photo
@@ -249,14 +317,11 @@ const ProfilePage = () => {
               type="text"
               onChange={descriptionChangeHandler}
               maxLength="200"
-              value={description}
+              value={profile.description}
               placeholder="Your Description"
               className="p-2 w-80"
             ></textarea>
-            <button
-              type="submit"
-              className="bg-blue-500 rounded-lg p-1"
-            >
+            <button type="submit" className="bg-blue-500 rounded-lg p-1">
               Save
             </button>
           </form>
@@ -267,27 +332,40 @@ const ProfilePage = () => {
 
   // List of reviews
   const ReviewsList = (
-    <div id="" className="container flex flex-col space-y-10 m-auto">
-      {reviews.map((review) => (
-        <Review
-          key={review._id}
-          id={review._id}
-          title={review.title}
-          body={review.content}
-          rating={review.rating}
-          createdAt={review.createdAt}
-          isAuthor={true}
-          deleteOnClickHandler={deleteReview}
-        />
-      ))}
+    <div id="" className="container flex flex-col space-y-10 m-auto pb-3 ">
+      {profile.reviews &&
+        profile.reviews.map((review) => (
+          <Review
+            key={review._id}
+            id={review._id}
+            title={review.title}
+            body={review.content}
+            rating={review.rating}
+            createdAt={review.createdAt}
+            isAuthor={true}
+            deleteOnClickHandler={deleteReview}
+          />
+        ))}
     </div>
   );
 
   return (
     <>
       {modalActive && EditProfile}
+      {subscribeModals.subscribedTo && (
+        <SubscribedTo
+          subscribedToList={profile.subscribedTo}
+          exitButton={subscribedToOnClickHandler}
+        />
+      )}
+      {subscribeModals.subscribers && (
+        <Subscribers
+          subscribedToList={profile.subscribers}
+          exitButton={subscribersOnClickHandler}
+        />
+      )}
       <Header />
-      <div className="shadow-slate-400 shadow-md max-w-6xl m-auto rounded-2xl">
+      <div className=" shadow-md max-w-6xl m-auto rounded-2xl bg-whitesmoke">
         <section>
           <Profile src={profilePicture.picture} />
         </section>

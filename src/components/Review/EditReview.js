@@ -150,8 +150,8 @@ function CreateReview({
           ref={quillRef}
         />
         <div className="flex gap-20 justify-center align-middle p-10">
-          {editing ? (
-            <>
+         
+            
               <button
                 className="ml-5 p-1 rounded-lg bg-blue-700/20 shadow-slate-700 shadow-md"
                 type="submit"
@@ -159,32 +159,7 @@ function CreateReview({
               >
                 Update
               </button>
-              <button
-                className="ml-5 p-1 rounded-lg bg-amber-500/90 shadow-slate-700 shadow-md"
-                type="submit"
-                onClick={publishDraftOnClickHandler}
-              >
-                Publish Draft
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="ml-5 p-1 rounded-lg bg-amber-500/90 shadow-slate-700 shadow-md bg-cerulean"
-                onClick={publish}
-                type="submit"
-              >
-                Publish
-              </button>
-              <button
-                className="ml-5 p-1 rounded-lg  bg-blue-700/20 shadow-slate-700 shadow-md"
-                onClick={draft}
-                type="submit"
-              >
-                Save Draft
-              </button>
-            </>
-          )}
+        
         </div>
       </form>
     </div>
