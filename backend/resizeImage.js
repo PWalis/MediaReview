@@ -1,4 +1,4 @@
-const sharp = require("sharp");
+const sharp = require("@img/sharp-linux-x64");
 
 // resize buffer image
 const resizeImage = (buffer, width, height) => {
