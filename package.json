@@ -31,10 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scipts eject",
-    "install-server": "cd backend && npm install",
-    "start-server": "cd backend && npm start",
-    "install-client": "npm install",
-    "start-client": "npm start"
+    "heroku-postbuild": "npm install && run build"
   },
   "eslintConfig": {
     "extends": [
