@@ -19,7 +19,7 @@ const {
 } = require("./saltAndHash.js");
 const uri = process.env.URI;
 const multer = require("multer");
-const { uploadFile, getFile, deleteFile, getPresignedUrl } = require("./S3.js");
+const { uploadFile, getPresignedUrl } = require("./S3.js");
 
 const connection = mongoose.createConnection(uri);
 const Review = connection.model("Review", ReviewSchema);
