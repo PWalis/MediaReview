@@ -9,13 +9,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const {
   saltAndHashPassword,
   hashSaltedPassword,
   hashFilename,
 } = require("./saltAndHash.js");
-const uri = process.env.URI ? process.env.URI : `mongodb+srv://pwalis:Newzyzz13@clusterwilky.k8hppvu.mongodb.net/?retryWrites=true&w=majority`;
+const uri = process.env.URI;
 const multer = require("multer");
 const { uploadFile, getFile, deleteFile, getPresignedUrl } = require("./S3.js");
 
