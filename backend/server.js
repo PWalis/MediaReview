@@ -27,7 +27,7 @@ const User = connection.model("User", UserSchema);
 const Token = connection.model("Token", TokenSchema);
 const ProfileImg = connection.model("ProfileImg", ProfileImgSchema);
 
-app.use(express.static(path.resolve(__dirname, "../build")));
+// app.use(express.static(path.resolve(__dirname, "../build")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
