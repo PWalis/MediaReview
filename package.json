@@ -1,7 +1,7 @@
 {
   "name": "media_review",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
+  "proxy": "https://media-review-node-19c244efb293.herokuapp.com/",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.1.0",
