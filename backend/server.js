@@ -34,6 +34,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// app.get("*", function (req, res) {
+//   res.sendFile(path.resolve(__dirname, "../build", "index.html"));
+// });
+
 //creates a review and adds it to the user's ref array
 app.post("/createReview", async (req, res) => {
   const user = await User.findOne({ _id: req.body.userID }); //find user by id
