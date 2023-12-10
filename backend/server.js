@@ -5,6 +5,8 @@ const {
   TokenSchema,
   ProfileImgSchema,
 } = require("./schema.js");
+require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -25,7 +27,7 @@ const User = connection.model("User", UserSchema);
 const Token = connection.model("Token", TokenSchema);
 const ProfileImg = connection.model("ProfileImg", ProfileImgSchema);
 
-app.use(express.static("public"));
+app.use(express.static(path.resolve(__dirname, "../build")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

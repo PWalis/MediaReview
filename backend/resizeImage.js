@@ -1,4 +1,4 @@
-const sharp = require("@img/sharp-linux-x64");
+const sharp = process.env.ENV == "development" ? require("sharp") : require("@img/sharp-linux-x64");
 
 // resize buffer image
 const resizeImage = (buffer, width, height) => {
