@@ -1,7 +1,6 @@
 {
   "name": "media_review",
   "version": "0.1.0",
-  "proxy": "localhost:8080",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.1.0",
