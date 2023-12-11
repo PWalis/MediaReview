@@ -33,7 +33,7 @@
     "test": "react-scripts test",
     "eject": "react-scipts eject",
     "heroku-postbuild": "npm install && npm run build",
-    "heroku-start": "concurrently \"npm run server\" \"npm run start\""
+    "heroku-start": "npm run server"
   },
   "eslintConfig": {
     "extends": [
