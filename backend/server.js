@@ -27,16 +27,16 @@ const User = connection.model("User", UserSchema);
 const Token = connection.model("Token", TokenSchema);
 const ProfileImg = connection.model("ProfileImg", ProfileImgSchema);
 
-// app.use(express.static(path.resolve(__dirname, "../build")));
+app.use(express.static(path.resolve(__dirname, "../build")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// app.get("*", function (req, res) {
-//   res.sendFile(path.resolve(__dirname, "../build", "index.html"));
-// });
+app.get("*", function (req, res) {
+  res.sendFile(path.resolve(__dirname, "../build", "index.html"));
+});
 
 //creates a review and adds it to the user's ref array
 app.post("/createReview", async (req, res) => {
