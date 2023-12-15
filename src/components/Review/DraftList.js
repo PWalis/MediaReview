@@ -5,7 +5,7 @@ const DraftList = ({ drafts, handleOnClick }) => {
     return (
       <div
         key={draft._id}
-        className="container relative shadow-md shadow-slate-600 bg-frenchgray p-3 rounded-md mb-4 overflow-hidden max-h-24"
+        className="relative shadow-md shadow-slate-600 bg-frenchgray p-3 rounded-md mb-4 overflow-hidden max-h-24"
       >
         <h1 className="mb-1">{draft.title}</h1>
         <h2 className="absolute top-3 right-5">{draft.rating}/10</h2>

@@ -119,7 +119,7 @@ function CreateReview({
  console.log(quillRef.current)
 
   return (
-    <div className=" h-full m-auto max-w-sm md:max-w-4xl pt-5 bg-whitesmoke rounded-md">
+    <div className="h-full mx-1 m-auto pt-5 bg-whitesmoke rounded-md">
       <form
         onSubmit={submitHandler}
         className="shadow-md shadow-slate-400 p-5 rounded-lg"

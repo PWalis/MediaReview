@@ -65,11 +65,11 @@ const Review = (props) => {
     </Link>
   );
   const BasicReview = (
-    <div className="col-start-2 col-span-3 relative border-b-2 border-slate-800 bg-transparent bg-opacity-30 w-full p-3 pb-8">
+    <div className="col-start-1 col-span-5 md:col-start-2 md:col-span-3 relative border-b-2 border-slate-800 bg-transparent bg-opacity-30 w-full p-3 pb-8">
       <h3 className="text-3xl">{title}</h3>
       <div className="text-lg" dangerouslySetInnerHTML={{ __html: body }}></div>
       <p className="">{`${rating}/10`}</p>
-      <p className="absolute top-3 right-5">
+      <p className="absolute sm:top-3 right-5 -top-1">
         {new Date(createdAt).toLocaleDateString("en-us", {
           year: "numeric",
           month: "short",

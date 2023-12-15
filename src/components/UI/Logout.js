@@ -15,7 +15,7 @@ const Logout = () => {
   };
   const navigate = useNavigate();
 
-  return <button onClick={onLogout}>Logout</button>;
+  return <button className="text-whitesmoke text-2xl" onClick={onLogout}>Logout</button>;
 };
 
 export default Logout;

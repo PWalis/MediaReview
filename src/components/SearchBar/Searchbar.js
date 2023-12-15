@@ -52,7 +52,7 @@ const SearchBar = () => {
 
   return (
     <>
-      <form id="searchBarForm" className="absolute top-0 right-1" onSubmit={onSubmitHandler}>
+      <form id="searchBarForm" className="lg:absolute lg:top-0 lg:right-1" onSubmit={onSubmitHandler}>
         <input
           id="searchBarInput"
           value={searchInput}

@@ -18,7 +18,7 @@ const SubscribeButton = ({ userID, subscriberID, subButton }) => {
   return (
     <button
       onClick={subscribeOnClickHandler}
-      className=" absolute top-5 right-10"
+      className="absolute sm:top-5 sm:right-10"
     >
       Subscribe
     </button>

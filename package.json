@@ -1,6 +1,7 @@
 {
   "name": "media_review",
   "version": "0.1.0",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.1.0",
@@ -30,10 +31,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "server": "cd backend && npm run heroku-start",
+    "dev-server": "cd backend && npm run dev",
     "test": "react-scripts test",
     "eject": "react-scipts eject",
     "heroku-postbuild": "npm install && npm run build",
-    "heroku-start": "npm run server"
+    "heroku-start": "npm run server",
+    "dev": "concurrently \"npm run start\" \"npm run dev-server\""
   },
   "eslintConfig": {
     "extends": [

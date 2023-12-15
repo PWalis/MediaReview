@@ -130,7 +130,7 @@ const Register = () => {
   };
 
   return (
-    <div className=" bg-whitesmoke container max-w-md grid grid-rows-5 mt-10 m-auto max-h-176 shadow-xl pl-3 pr-3 h-176 justify-center rounded-3xl">
+    <div className=" bg-whitesmoke container md:max-w-md max-w-xs grid grid-rows-5 mt-10 m-auto max-h-176 shadow-xl pl-3 pr-3 h-176 justify-center rounded-3xl">
       <h1 className=" text-5xl m-auto row-span-2 row-end-3">Book Review</h1>
       <form onSubmit={submitHandler} className="flex m-auto flex-col gap-5 ">
         <input

@@ -126,7 +126,7 @@ const OtherUserProfilePage = () => {
   return (
     <>
       <Header />
-      <div className="shadow-slate-400 shadow-md max-w-6xl m-auto rounded-2xl bg-whitesmoke pb-3">
+      <div className="shadow-slate-400 shadow-md max-w-6xl mx-1 lg:m-auto rounded-2xl bg-whitesmoke pb-3">
         <section>
           <Profile src={profilePicture.picture} />
         </section>

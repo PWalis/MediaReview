@@ -219,7 +219,7 @@ const ProfilePage = () => {
   };
 
   const Profile = ({ src }) => (
-    <div className="container m-auto pt-4 max-w-6xl">
+    <div className=" m-auto pt-4 max-w-6xl">
       <div
         id="profile picture"
         className="grid md:grid-cols-4 md:grid-rows-1 grid-cols-2 grid-rows-2 relative "
@@ -365,7 +365,7 @@ const ProfilePage = () => {
         />
       )}
       <Header />
-      <div className=" shadow-md max-w-6xl m-auto rounded-2xl bg-whitesmoke">
+      <div className=" shadow-md max-w-6xl mx-1 lg:m-auto rounded-2xl bg-whitesmoke">
         <section>
           <Profile src={profilePicture.picture} />
         </section>

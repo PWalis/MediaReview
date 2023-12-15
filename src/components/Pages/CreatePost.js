@@ -64,11 +64,8 @@ function CreatePost() {
   return (
     <>
       <Header />
-      <div className="grid grid-cols-4 grid-rows-1 gap-6 pt-5">
-        <div className="flex flex-col m-4 overflow-auto max-h-176 drop-shadow-lg shadow-slate-500 p-2">
-          <DraftList drafts={drafts} handleOnClick={loadDraft} />
-        </div>
-        <div className="col-span-2 rounded-md">
+      <div className="flex flex-col xl:grid xl:grid-cols-4 md:grid-rows-1 md:gap-6 pt-5">
+        <div className="col-start-2 col-span-2 rounded-md">
           <CreateReview
             id={id}
             editing={editing}
@@ -81,6 +78,9 @@ function CreatePost() {
             setTitle={setTitle}
             setRating={setRating}
           />
+        </div>
+        <div className="flex flex-col m-4 overflow-auto max-h-176 drop-shadow-lg shadow-slate-500 p-2">
+          <DraftList drafts={drafts} handleOnClick={loadDraft} />
         </div>
       </div>
     </>

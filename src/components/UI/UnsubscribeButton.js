@@ -15,7 +15,7 @@ const UnsubscribeButton = ({ userID, subscriberID, subButton }) => {
     subButton();
   };
 
-  return <button onClick={unsubscribeOnClickHandler} className=" absolute top-5 right-10" >Unsubscribe</button>;
+  return <button onClick={unsubscribeOnClickHandler} className=" absolute sm:top-5 sm:right-10" >Unsubscribe</button>;
 };
 
 export default UnsubscribeButton;
