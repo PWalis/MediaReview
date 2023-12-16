@@ -9,7 +9,7 @@ function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const isAuthenticatedHeader = (
-    <nav className="sticky top-0 z-50 bg-charcoal">
+    <nav className="sticky top-0 z-40 bg-charcoal">
       <section className="grid  grid-cols-10 lg:hidden justify-center items-center relative">
         <div className="relative col-span-8 col-start-1 pl-5 sm:col-start-3 sm:col-span-6">
           <SearchBar />

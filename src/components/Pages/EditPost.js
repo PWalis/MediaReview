@@ -60,8 +60,8 @@ const EditPost = () => {
   return (
     <>
       <Header />
-      <div className="grid grid-cols-4 grid-rows-1 gap-6 pt-5">
-        <div className="col-span-2 col-start-2 rounded-md">
+      <div className="mx-1 lg:grid lg:grid-cols-4 lg:grid-rows-1 lg:gap-6 pt-5">
+        <div className="lg:col-span-2 lg:col-start-2 rounded-md">
           <EditReview
             id={id}
             updateRatingHandler={updateRatingHandler}
