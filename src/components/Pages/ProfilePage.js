@@ -244,21 +244,21 @@ const ProfilePage = () => {
           <button
             id="Subscriptions Button"
             onClick={subscribedToOnClickHandler}
-            className="absolute top-0 right-3 bg-blue-500 border-blue-500 hover:bg-cyan-500 hover:border-cyan-500 border-2 rounded-xl text-white"
+            className="absolute top-0 right-3 bg-cerulean rounded-xl border-cerulean border-2 text-white"
           >
             Subscriptions
           </button>
           <button
             id="Subscribers Button"
             onClick={subscribersOnClickHandler}
-            className="absolute top-8 right-3 bg-blue-500 rounded-xl border-blue-500 border-2 hover:bg-cyan-500 hover:border-cyan-500 text-white"
+            className="absolute top-8 right-3 bg-cerulean rounded-xl border-2 border-cerulean text-white"
           >
             Subscribers
           </button>
           <button
             id="Edit Button"
             onClick={editOnClickHandler}
-            className="absolute top-16 right-3 bg-blue-500 rounded-xl border-blue-500 border-2 hover:bg-cyan-500 hover:border-cyan-500 text-white"
+            className="absolute top-16 right-3 bg-cerulean rounded-xl border-cerulean border-2 text-white"
           >
             Edit
           </button>
@@ -295,10 +295,10 @@ const ProfilePage = () => {
             className="w-10"
           ></img>
         </button>
-        <div className="relative group w-52 m-auto">
+        <div className="relative group sm:w-52 m-auto">
           <img
             src={profilePicture.picture}
-            className="rounded-full m-auto group-hover:opacity-40 object-cover h-52 w-52"
+            className="rounded-full m-auto group-hover:opacity-40 object-cover h-52 sm:w-52"
           />
           <p className="scale-0 group-hover:scale-100 absolute text-align-center top-1/2 right-16 font-extrabold">
             Upload Photo
@@ -306,10 +306,10 @@ const ProfilePage = () => {
           <input
             type="file"
             onChange={photoUpload}
-            className="opacity-0 absolute h-52 w-52 z-40 top-0 cursor-pointer"
+            className="opacity-0 absolute h-52 sm:w-52 top-0 cursor-pointer"
           ></input>
         </div>
-        <div className=" w-96 p-5 relative">
+        <div className=" sm:w-96 p-5 relative">
           <form className="w-1/4" onSubmit={descriptionSubmitHandler}>
             <label htmlFor="description"></label>
             <textarea
@@ -319,9 +319,9 @@ const ProfilePage = () => {
               maxLength="200"
               value={profile.description}
               placeholder="Your Description"
-              className="p-2 w-80"
+              className="p-2 sm:w-80"
             ></textarea>
-            <button type="submit" className="bg-blue-500 rounded-lg p-1">
+            <button type="submit" className="bg-cerulean rounded-lg p-1">
               Save
             </button>
           </form>
@@ -370,7 +370,7 @@ const ProfilePage = () => {
           <Profile src={profilePicture.picture} />
         </section>
         <section>
-          <div className="relative overflow-auto max-h-144 max-w-6xl m-auto">
+          <div className="relative md:overflow-auto md:max-h-144 max-w-6xl m-auto">
             {ReviewsList}
           </div>
         </section>

@@ -131,7 +131,7 @@ const OtherUserProfilePage = () => {
           <Profile src={profilePicture.picture} />
         </section>
         <section>
-          <div className="relative overflow-auto max-h-144 max-w-6xl m-auto">
+          <div className="relative md:overflow-auto md:max-h-144 max-w-6xl m-auto">
             {ReviewsList}
           </div>
         </section>

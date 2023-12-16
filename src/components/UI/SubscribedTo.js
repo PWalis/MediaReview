@@ -18,7 +18,7 @@ const SubscribedTo = ({ subscribedToList, exitButton }) => {
             className="w-10"
           ></img>
         </button>
-        <h1 className="text-2xl font-bold">Subscriptions</h1>
+        <h1 className="text-2xl pt-3 font-bold text-cerulean">Subscriptions</h1>
         <div className="flex flex-col items-center justify-center">
           {subscribedToList &&
             subscribedToList.map((user) => (
